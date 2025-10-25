@@ -1,0 +1,343 @@
+<div class="min-h-screen text-slate-200 font-sans">
+  <!-- NOTIFICATION CONTAINER -->
+  <div class="fixed top-5 right-5 z-50 flex flex-col gap-3">
+    @for(notification of notifications(); track notification.id) {
+      <div [class]="'flex items-center gap-4 w-80 p-3 rounded-lg shadow-lg border ' + (notification.type === 'success' ? 'bg-green-600/20 border-green-500 text-green-300' : 'bg-red-600/20 border-red-500 text-red-300')">
+        <i [class]="'fa-solid ' + (notification.type === 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle')"></i>
+        <span class="flex-grow">{{ notification.message }}</span>
+        <button (click)="dismissNotification(notification.id)" class="text-slate-400 hover:text-white">&times;</button>
+      </div>
+    }
+  </div>
+
+  <div class="flex h-screen">
+    <!-- LEFT SIDEBAR: INTERN LIST -->
+    <aside class="w-1/3 bg-slate-950/50 border-r border-slate-800 flex flex-col">
+      <header class="p-4 border-b border-slate-800">
+        <h1 class="text-2xl font-bold text-white"><i class="fa-solid fa-users mr-3 text-indigo-400"></i>Interns</h1>
+      </header>
+      <div class="flex-grow overflow-y-auto p-2">
+        @for(intern of interns(); track intern.id) {
+          <div (click)="selectIntern(intern)" 
+               [class]="'flex items-center p-3 mb-2 rounded-lg cursor-pointer transition-all duration-200 ' + (selectedIntern()?.id === intern.id ? 'bg-indigo-500/20' : 'hover:bg-slate-800/60')">
+            <img [src]="intern.avatarUrl" alt="{{intern.name}}" class="w-12 h-12 rounded-full mr-4 border-2 border-slate-600">
+            <div>
+              <p class="font-semibold text-white">{{ intern.name }}</p>
+              <p class="text-sm text-slate-400">{{ intern.email }}</p>
+            </div>
+          </div>
+        }
+        @if(interns().length === 0) {
+           <div class="text-center p-10 text-slate-500">
+             <i class="fa-solid fa-user-plus fa-2x mb-2"></i>
+             <p>No interns found. Add one to get started!</p>
+           </div>
+        }
+      </div>
+      <footer class="p-4 border-t border-slate-800">
+        <button (click)="openAddInternForm()" class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+          <i class="fa-solid fa-plus mr-2"></i>Add Intern
+        </button>
+      </footer>
+    </aside>
+
+    <!-- RIGHT CONTENT: INTERN DETAILS -->
+    <main class="w-2/3 flex flex-col bg-slate-900">
+      @if (selectedIntern(); as intern) {
+        <div class="flex-grow overflow-y-auto p-6">
+          <!-- Profile Header -->
+          <header class="flex items-start justify-between pb-6 border-b border-slate-800 mb-6">
+            <div class="flex items-center">
+              <img [src]="intern.avatarUrl" alt="{{intern.name}}" class="w-24 h-24 rounded-full mr-6 border-4 border-slate-700">
+              <div>
+                <h2 class="text-4xl font-extrabold text-white">{{ intern.name }}</h2>
+                <p class="text-lg text-slate-400 mt-1"><i class="fa-solid fa-university mr-2"></i>{{ intern.university }}</p>
+                <p class="text-md text-slate-500 mt-1"><i class="fa-solid fa-calendar-alt mr-2"></i>Start Date: {{ intern.startDate | date:'longDate' }}</p>
+              </div>
+            </div>
+            <div class="flex gap-2">
+              <button (click)="openEditInternForm(intern)" class="bg-slate-700 hover:bg-slate-600 text-white font-bold py-2 px-4 rounded-lg transition-colors"><i class="fa-solid fa-pencil"></i></button>
+              <button (click)="confirmDelete(intern.id, 'intern')" class="bg-red-600/80 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition-colors"><i class="fa-solid fa-trash"></i></button>
+            </div>
+          </header>
+
+          <!-- Key Performance Metrics -->
+          <section class="mb-8">
+            <h3 class="text-2xl font-bold text-white mb-4">Key Performance Metrics</h3>
+            @if (tasksForSelectedIntern().length > 0) {
+              @let metrics = performanceMetrics();
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <!-- Task Completion Rate -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700/50 flex flex-col justify-between h-40">
+                  <div>
+                    <p class="text-sm text-slate-400 mb-1 flex items-center gap-2"><i class="fa-solid fa-check-double text-green-400"></i>Completion Rate</p>
+                    <p class="text-4xl font-bold text-white">{{ metrics.completionRate }}%</p>
+                  </div>
+                  <div class="w-full bg-slate-700 rounded-full h-3 mt-2">
+                    <div class="bg-gradient-to-r from-green-600 to-green-400 h-3 rounded-full transition-all duration-500 ease-out" [style.width.%]="metrics.completionRate"></div>
+                  </div>
+                </div>
+
+                <!-- Average Feedback Score -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700/50 flex flex-col justify-between h-40">
+                  <div>
+                    <p class="text-sm text-slate-400 mb-1 flex items-center gap-2"><i class="fa-solid fa-star-half-alt text-yellow-400"></i>Avg. Feedback Score</p>
+                    <p class="text-4xl font-bold text-white">{{ metrics.averageFeedbackScore > 0 ? metrics.averageFeedbackScore : 'N/A' }}</p>
+                  </div>
+                  @if(metrics.averageFeedbackScore > 0) {
+                    <div class="flex items-center gap-1 text-2xl text-yellow-400 mt-2">
+                      @for(star of feedbackStars(); track $index) {
+                        @switch(star) {
+                          @case('full') { <i class="fa-solid fa-star"></i> }
+                          @case('half') { <i class="fa-solid fa-star-half-alt"></i> }
+                          @case('empty') { <i class="fa-regular fa-star text-slate-600"></i> }
+                        }
+                      }
+                    </div>
+                  } @else {
+                    <div class="flex items-center gap-1 text-2xl text-slate-600 mt-2">
+                      @for(i of [0,1,2,3,4]; track i) {
+                        <i class="fa-regular fa-star"></i>
+                      }
+                    </div>
+                  }
+                </div>
+
+                <!-- Avg. Time to Complete -->
+                <div class="bg-slate-800/50 p-6 rounded-lg border border-slate-700/50 flex flex-col justify-between h-40">
+                  <div>
+                    <p class="text-sm text-slate-400 mb-1 flex items-center gap-2"><i class="fa-solid fa-hourglass-half text-blue-400"></i>Avg. Task Time</p>
+                    <p class="text-4xl font-bold text-white">{{ metrics.avgTimeToComplete > 0 ? metrics.avgTimeToComplete + ' days' : 'N/A' }}</p>
+                  </div>
+                  <p class="text-slate-500 text-xs mt-2">Average time to move a task from 'To Do' to 'Completed'.</p>
+                </div>
+              </div>
+            } @else {
+              <div class="text-center p-10 text-slate-500 bg-slate-800/30 rounded-lg">
+                <i class="fa-solid fa-chart-line fa-2x mb-2"></i>
+                <p>No task data available to calculate performance metrics.</p>
+              </div>
+            }
+          </section>
+
+          <!-- Performance Trends -->
+          <section class="mb-8">
+            <h3 class="text-2xl font-bold text-white mb-4">Performance Trends</h3>
+            @if (historicalPerformance().length > 0) {
+              <div #chartContainer class="bg-slate-800/50 p-4 rounded-lg border border-slate-700/50 relative">
+                <!-- D3 chart is rendered here -->
+              </div>
+            } @else {
+              <div class="text-center p-10 text-slate-500 bg-slate-800/30 rounded-lg">
+                <i class="fa-solid fa-clock-rotate-left fa-2x mb-2"></i>
+                <p>Complete more tasks to see performance trends.</p>
+              </div>
+            }
+          </section>
+
+          <!-- Task Section -->
+          <section>
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-2xl font-bold text-white">Tasks</h3>
+              <button (click)="openAddTaskForm()" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">
+                <i class="fa-solid fa-plus mr-2"></i>Add Task
+              </button>
+            </div>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              @for(task of tasksForSelectedIntern(); track task.id) {
+                <div [class]="'bg-slate-800/50 p-4 rounded-lg border ' + (isTaskOverdue(task) ? 'border-red-500/70 animate-pulse-border' : 'border-slate-700/50')">
+                  <div class="flex justify-between items-start">
+                    <h4 class="text-xl font-bold text-white mb-1">{{ task.title }}</h4>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                      <span [class]="'px-3 py-1 text-xs font-semibold rounded-full ' + getTaskPriorityClass(task.priority)">
+                        {{ task.priority }}
+                      </span>
+                      <span [class]="'px-3 py-1 text-xs font-semibold rounded-full ' + getTaskStatusClass(task.status)">
+                        {{ task.status }}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="flex items-center text-sm text-slate-500 mb-3">
+                    <i class="fa-solid fa-calendar-day mr-2"></i>
+                    <span>Due: {{ task.dueDate | date:'mediumDate' }}</span>
+                    @if(isTaskOverdue(task)) {
+                      <span class="ml-3 px-2 py-0.5 text-xs font-bold uppercase rounded-full bg-red-600 text-white flex items-center shadow-md">
+                        <i class="fa-solid fa-triangle-exclamation mr-1.5"></i> Overdue
+                      </span>
+                    }
+                  </div>
+                  <p class="text-slate-400 mb-3 text-sm">{{ task.description }}</p>
+
+                  @if (task.status === 'In Progress' && task.progress != null) {
+                    <div class="mb-3">
+                      <div class="flex justify-between mb-1">
+                        <span class="text-xs font-medium text-blue-300">Progress</span>
+                        <span class="text-xs font-medium text-blue-300">{{ task.progress }}%</span>
+                      </div>
+                      <div class="w-full bg-slate-700 rounded-full h-2">
+                        <div class="bg-gradient-to-r from-blue-600 to-blue-400 h-2 rounded-full transition-all duration-300 ease-in-out" [style.width.%]="task.progress"></div>
+                      </div>
+                    </div>
+                  }
+
+                  @if (task.feedback) {
+                    <div class="bg-slate-700/50 p-3 rounded-md text-sm italic">
+                      <p class="text-slate-300 "><strong class="font-semibold not-italic">Feedback:</strong> {{ task.feedback }}</p>
+                    </div>
+                  }
+                   <div class="flex gap-2 mt-4 justify-end">
+                    <button (click)="openEditTaskForm(task)" class="text-xs bg-slate-600 hover:bg-slate-500 text-white font-bold py-1 px-3 rounded-md transition-colors">Edit</button>
+                    <button (click)="confirmDelete(task.id, 'task')" class="text-xs bg-red-600/70 hover:bg-red-500 text-white font-bold py-1 px-3 rounded-md transition-colors">Delete</button>
+                  </div>
+                </div>
+              }
+              @if(tasksForSelectedIntern().length === 0) {
+                <div class="col-span-1 lg:col-span-2 text-center p-10 text-slate-500 bg-slate-800/30 rounded-lg">
+                  <i class="fa-solid fa-clipboard-check fa-2x mb-2"></i>
+                  <p>No tasks assigned yet. Add one to get started!</p>
+                </div>
+              }
+            </div>
+          </section>
+        </div>
+      } @else {
+        <div class="flex-grow flex items-center justify-center">
+          <div class="text-center text-slate-600">
+            <i class="fa-solid fa-arrow-left fa-3x mb-4"></i>
+            <h2 class="text-2xl font-bold">Select an intern</h2>
+            <p>Choose an intern from the list to view their profile and tasks.</p>
+          </div>
+        </div>
+      }
+    </main>
+  </div>
+  
+  <!-- MODALS -->
+  @if(isInternFormVisible() || isTaskFormVisible() || isConfirmDeleteVisible() || isConfirmCompleteVisible()) {
+    <div class="fixed inset-0 bg-black/70 z-40 flex items-center justify-center p-4" (click)="closeForms()">
+      <div class="bg-slate-800 rounded-lg shadow-xl w-full max-w-lg border border-slate-700" (click)="$event.stopPropagation()">
+        
+        <!-- Intern Form -->
+        @if(isInternFormVisible()) {
+          <form [formGroup]="internForm" (ngSubmit)="saveIntern()">
+            <header class="p-4 border-b border-slate-700">
+              <h3 class="text-xl font-bold">{{ editingIntern() ? 'Edit Intern' : 'Add New Intern' }}</h3>
+            </header>
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="name">Full Name</label>
+                <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="name" formControlName="name" type="text">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="email">Email Address</label>
+                <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="email" formControlName="email" type="email">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="university">University</label>
+                <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="university" formControlName="university" type="text">
+              </div>
+               <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="startDate">Start Date</label>
+                <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="startDate" formControlName="startDate" type="date">
+              </div>
+            </div>
+            <footer class="p-4 bg-slate-900/50 flex justify-end gap-3 rounded-b-lg">
+              <button type="button" (click)="closeForms()" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Cancel</button>
+              <button type="submit" [disabled]="internForm.invalid" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:bg-slate-700 disabled:cursor-not-allowed">Save</button>
+            </footer>
+          </form>
+        }
+
+        <!-- Task Form -->
+        @if(isTaskFormVisible()) {
+          <form [formGroup]="taskForm" (ngSubmit)="saveTask()">
+            <header class="p-4 border-b border-slate-700">
+              <h3 class="text-xl font-bold">{{ editingTask() ? 'Edit Task' : 'Add New Task' }}</h3>
+            </header>
+            <div class="p-6 space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="title">Title</label>
+                <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="title" formControlName="title" type="text">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="description">Description</label>
+                <textarea class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="description" formControlName="description" rows="3"></textarea>
+              </div>
+              <div class="grid grid-cols-3 gap-4">
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1" for="status">Status</label>
+                  <select id="status" formControlName="status" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                      @for(status of taskStatuses; track status) {
+                          <option [value]="status">{{status}}</option>
+                      }
+                  </select>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1" for="priority">Priority</label>
+                  <select id="priority" formControlName="priority" class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none">
+                      @for(priority of taskPriorities; track priority) {
+                          <option [value]="priority">{{priority}}</option>
+                      }
+                  </select>
+                </div>
+                 <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1" for="dueDate">Due Date</label>
+                  <input class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="dueDate" formControlName="dueDate" type="date">
+                </div>
+              </div>
+
+              @if (taskForm.get('status')?.value === 'In Progress') {
+                <div>
+                  <label class="block text-sm font-medium text-slate-300 mb-1" for="progress">Progress: {{ taskForm.get('progress')?.value }}%</label>
+                  <input type="range" id="progress" formControlName="progress" min="0" max="100" class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-indigo-500">
+                </div>
+              }
+
+              <div>
+                <label class="block text-sm font-medium text-slate-300 mb-1" for="feedback">Feedback</label>
+                <textarea class="w-full bg-slate-900 border border-slate-600 rounded-md p-2 text-white focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 outline-none" id="feedback" formControlName="feedback" rows="2"></textarea>
+              </div>
+            </div>
+            <footer class="p-4 bg-slate-900/50 flex justify-end gap-3 rounded-b-lg">
+              <button type="button" (click)="closeForms()" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Cancel</button>
+              <button type="submit" [disabled]="taskForm.invalid" class="bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2 px-4 rounded-lg transition-colors disabled:bg-slate-700 disabled:cursor-not-allowed">Save Task</button>
+            </footer>
+          </form>
+        }
+        
+        <!-- Confirm Delete Dialog -->
+        @if(isConfirmDeleteVisible() && itemToDelete(); as item) {
+          <div>
+            <header class="p-4 border-b border-slate-700">
+                <h3 class="text-xl font-bold text-red-400"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Confirm Deletion</h3>
+            </header>
+            <div class="p-6">
+                <p>Are you sure you want to delete this {{item.type}}? This action cannot be undone.</p>
+            </div>
+            <footer class="p-4 bg-slate-900/50 flex justify-end gap-3 rounded-b-lg">
+                <button type="button" (click)="closeForms()" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Cancel</button>
+                <button (click)="executeDelete()" class="bg-red-600 hover:bg-red-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Delete</button>
+            </footer>
+          </div>
+        }
+
+        <!-- Confirm Complete Dialog -->
+        @if(isConfirmCompleteVisible() && pendingTaskUpdate(); as task) {
+          <div>
+            <header class="p-4 border-b border-slate-700">
+                <h3 class="text-xl font-bold text-green-400"><i class="fa-solid fa-check-circle mr-2"></i>Confirm Task Completion</h3>
+            </header>
+            <div class="p-6">
+                <p>Are you sure you want to mark the task "{{ task.title }}" as completed? This action cannot be undone.</p>
+            </div>
+            <footer class="p-4 bg-slate-900/50 flex justify-end gap-3 rounded-b-lg">
+                <button type="button" (click)="closeForms()" class="bg-slate-600 hover:bg-slate-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Cancel</button>
+                <button (click)="executeCompleteTask()" class="bg-green-600 hover:bg-green-500 text-white font-bold py-2 px-4 rounded-lg transition-colors">Confirm</button>
+            </footer>
+          </div>
+        }
+
+      </div>
+    </div>
+  }
+</div>

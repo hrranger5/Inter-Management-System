@@ -1,0 +1,257 @@
+{
+  "interns": [
+    {
+      "id": "1",
+      "name": "Alex Johnson",
+      "email": "alex.j@example.com",
+      "university": "Stanford University",
+      "startDate": "2024-06-01",
+      "avatarUrl": "https://i.pravatar.cc/150?u=1"
+    },
+    {
+      "id": "2",
+      "name": "Brenda Smith",
+      "email": "brenda.s@example.com",
+      "university": "MIT",
+      "startDate": "2024-06-15",
+      "avatarUrl": "https://i.pravatar.cc/150?u=2"
+    },
+    {
+      "id": "3",
+      "name": "Charlie Brown",
+      "email": "charlie.b@example.com",
+      "university": "Harvard University",
+      "startDate": "2024-07-01",
+      "avatarUrl": "https://i.pravatar.cc/150?u=3"
+    },
+    {
+      "id": "4",
+      "name": "Fatima Al-Fihri",
+      "email": "fatima.a@example.com",
+      "university": "University of Baghdad",
+      "startDate": "2024-06-03",
+      "avatarUrl": "https://i.pravatar.cc/150?u=4"
+    },
+    {
+      "id": "5",
+      "name": "Omar Khayyam",
+      "email": "omar.k@example.com",
+      "university": "Cairo University",
+      "startDate": "2024-06-10",
+      "avatarUrl": "https://i.pravatar.cc/150?u=5"
+    },
+    {
+      "id": "6",
+      "name": "Aisha Bint Abu Bakr",
+      "email": "aisha.b@example.com",
+      "university": "Al-Azhar University",
+      "startDate": "2024-06-18",
+      "avatarUrl": "https://i.pravatar.cc/150?u=6"
+    },
+    {
+      "id": "7",
+      "name": "Tariq Ibn Ziyad",
+      "email": "tariq.z@example.com",
+      "university": "King Fahd University",
+      "startDate": "2024-07-05",
+      "avatarUrl": "https://i.pravatar.cc/150?u=7"
+    },
+    {
+      "id": "8",
+      "name": "Khadija al-Kubra",
+      "email": "khadija.k@example.com",
+      "university": "Qatar University",
+      "startDate": "2024-07-10",
+      "avatarUrl": "https://i.pravatar.cc/150?u=8"
+    },
+    {
+      "id": "9",
+      "name": "Salman Al-Farsi",
+      "email": "salman.f@example.com",
+      "university": "American University of Beirut",
+      "startDate": "2024-07-15",
+      "avatarUrl": "https://i.pravatar.cc/150?u=9"
+    },
+    {
+      "id": "10",
+      "name": "Zainab bint Muhammad",
+      "email": "zainab.m@example.com",
+      "university": "United Arab Emirates University",
+      "startDate": "2024-07-20",
+      "avatarUrl": "https://i.pravatar.cc/150?u=10"
+    }
+  ],
+  "tasks": [
+    {
+      "id": "t1",
+      "internId": "1",
+      "title": "Setup Development Environment",
+      "description": "Install all required software and dependencies for the project.",
+      "status": "Completed",
+      "priority": "High",
+      "feedback": "Great job, completed ahead of schedule!",
+      "dueDate": "2024-06-10",
+      "progress": 100
+    },
+    {
+      "id": "t2",
+      "internId": "1",
+      "title": "Frontend Component Library",
+      "description": "Research and create a presentation on 3 modern component libraries.",
+      "status": "In Progress",
+      "priority": "High",
+      "feedback": "",
+      "dueDate": "2024-08-16",
+      "progress": 75
+    },
+    {
+      "id": "t3",
+      "internId": "1",
+      "title": "Onboarding Documentation",
+      "description": "Review and provide feedback on the intern onboarding docs.",
+      "status": "To Do",
+      "priority": "Medium",
+      "feedback": "",
+      "dueDate": "2024-08-28"
+    },
+    {
+      "id": "t4",
+      "internId": "2",
+      "title": "API Endpoint Testing",
+      "description": "Use Postman to test the new user API endpoints.",
+      "status": "In Progress",
+      "priority": "High",
+      "feedback": "",
+      "dueDate": "2024-08-24",
+      "progress": 40
+    },
+    {
+      "id": "t5",
+      "internId": "2",
+      "title": "Database Schema Design",
+      "description": "Draft a V1 schema for the new inventory feature.",
+      "status": "To Do",
+      "priority": "Medium",
+      "feedback": "",
+      "dueDate": "2024-09-04"
+    },
+    {
+      "id": "t6",
+      "internId": "3",
+      "title": "QA Testing for Mobile App",
+      "description": "Perform regression testing on the iOS app.",
+      "status": "Completed",
+      "priority": "High",
+      "feedback": "Found some critical bugs. Well done.",
+      "dueDate": "2024-07-15",
+      "progress": 100
+    },
+    {
+      "id": "t7",
+      "internId": "4",
+      "title": "User Authentication Flow",
+      "description": "Design the UI/UX for user login and registration.",
+      "status": "Completed",
+      "priority": "High",
+      "feedback": "Excellent wireframes, very intuitive.",
+      "dueDate": "2024-06-20",
+      "progress": 100
+    },
+    {
+      "id": "t8",
+      "internId": "4",
+      "title": "Code Refactoring",
+      "description": "Refactor the legacy payment module for better performance.",
+      "status": "In Progress",
+      "priority": "Medium",
+      "feedback": "",
+      "dueDate": "2024-08-19",
+      "progress": 60
+    },
+    {
+      "id": "t9",
+      "internId": "5",
+      "title": "Marketing Campaign Analysis",
+      "description": "Analyze the performance of the Q2 marketing campaign.",
+      "status": "To Do",
+      "priority": "Low",
+      "feedback": "",
+      "dueDate": "2024-08-31"
+    },
+    {
+      "id": "t10",
+      "internId": "6",
+      "title": "Social Media Content Creation",
+      "description": "Create 10 posts for our Instagram channel.",
+      "status": "Completed",
+      "priority": "Medium",
+      "feedback": "Great content, engagement is up.",
+      "dueDate": "2024-07-01",
+      "progress": 100
+    },
+    {
+      "id": "t11",
+      "internId": "6",
+      "title": "Competitor Research",
+      "description": "Research and report on the top 3 competitors.",
+      "status": "Completed",
+      "priority": "Low",
+      "feedback": "Very detailed report.",
+      "dueDate": "2024-07-10",
+      "progress": 100
+    },
+    {
+      "id": "t12",
+      "internId": "7",
+      "title": "Backend API Documentation",
+      "description": "Document all endpoints for the new microservice.",
+      "status": "In Progress",
+      "priority": "High",
+      "feedback": "",
+      "dueDate": "2024-08-20",
+      "progress": 20
+    },
+    {
+      "id": "t13",
+      "internId": "7",
+      "title": "Unit Testing",
+      "description": "Write unit tests for the user service, aiming for 90% coverage.",
+      "status": "To Do",
+      "priority": "Medium",
+      "feedback": "",
+      "dueDate": "2024-09-02"
+    },
+    {
+      "id": "t14",
+      "internId": "8",
+      "title": "Customer Feedback Synthesis",
+      "description": "Synthesize feedback from the latest customer survey.",
+      "status": "In Progress",
+      "priority": "Medium",
+      "feedback": "",
+      "dueDate": "2024-08-26",
+      "progress": 85
+    },
+    {
+      "id": "t15",
+      "internId": "9",
+      "title": "Data Migration Script",
+      "description": "Write a script to migrate user data to the new schema.",
+      "status": "To Do",
+      "priority": "High",
+      "feedback": "",
+      "dueDate": "2024-09-10"
+    },
+    {
+      "id": "t16",
+      "internId": "10",
+      "title": "Accessibility Audit",
+      "description": "Perform an accessibility audit of the main application.",
+      "status": "Completed",
+      "priority": "Low",
+      "feedback": "Found several critical issues, well done.",
+      "dueDate": "2024-07-25",
+      "progress": 100
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Intern Management System",
+  "description": "A comprehensive CRUD system to efficiently manage intern profiles, track their tasks, and monitor performance. Provides a centralized dashboard for streamlined intern management.",
+  "requestFramePermissions": []
+}
